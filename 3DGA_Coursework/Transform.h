@@ -12,7 +12,6 @@ public:
 	static const glm::vec3 LEFT;
 
 	Transform();
-	~Transform();
 
 	void Translate(glm::vec3 direction);
 	void Rotate(glm::vec3 axis, float angle_deg);
@@ -30,6 +29,7 @@ public:
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
 
+	glm::mat4 GetModelMatrix();
 private:
 	glm::vec3 position;
 	glm::vec3 rotation;

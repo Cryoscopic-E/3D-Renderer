@@ -1,15 +1,25 @@
 #include "Renderer.h"
 
-
-Renderer::Renderer(Mesh& mesh)
+Renderer::Renderer(Mesh* mesh, Material* mat)
 {
+	this->mesh = mesh;
+	this->material = mat;
 }
 
-Renderer::~Renderer()
+void Renderer::prepareShader()
 {
+	material->use();	
+}
+void Renderer::detachShader()
+{
+	material->unuse();
+}
+void Renderer::drawMesh()
+{
+	mesh->Draw();
 }
 
-void Renderer::Draw()
+Shader* Renderer::GetShader()
 {
-
+	return this->material->GetShader();
 }

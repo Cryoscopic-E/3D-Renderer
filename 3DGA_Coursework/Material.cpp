@@ -1,5 +1,40 @@
 #include "Material.h"
 
-Material::Material(glm::vec3& a, glm::vec3& d, glm::vec3 sp, float sh)
+Material::Material(glm::vec3 a, glm::vec3 d, glm::vec3 sp, float sh, Texture* textureDiffuse, Texture* textureSpecular, Shader* shader)
 {
+	this->ambient = a;
+	this->diffuse = d;
+	this->specular = sp;
+	this->shininess = sh;
+
+	this->textureDiffuse = textureDiffuse;
+	this->textureSpecular = textureSpecular;
+
+	this->shader = shader;
+}
+
+void Material::use()
+{
+	this->shader->bind();
+	this->shader->setUniform("material.ambient", this->ambient);
+	this->shader->setUniform("material.diffuse", this->diffuse);
+	this->shader->setUniform("material.specular", this->specular);
+	this->shader->setUniform("material.shininess", this->shininess);
+	this->shader->setUniform("material.textureDiffuse", 0);
+	this->shader->setUniform("material.textureSpecular", 1);
+	this->shader->setUniform("light.position", glm::vec3(0.0f, 2.0f, .5f)); //TODO remove light
+	this->shader->setUniform("light.ambient", glm::vec3(.2f, .2f, .2f));
+	this->shader->setUniform("light.diffuse", glm::vec3(.5f, .5f, .5f));
+	this->shader->setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	this->textureDiffuse->bind(0);
+	this->textureSpecular->bind(1);
+}
+
+void Material::unuse()
+{
+	this->shader->unbind();
+}
+Shader* Material::GetShader()
+{
+	return this->shader;
 }

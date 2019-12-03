@@ -2,13 +2,22 @@
 #define OBJECT_H
 
 #include "Transform.h"
-#include "Mesh.h"
+#include "Renderer.h"
 
 class Object
 {
 public:
-	Transform transform;
 
+	Object()
+	{
+		this->transform = new Transform();
+	}
+	~Object()
+	{
+		delete this->transform;
+	}
+
+	Transform *transform;
 	virtual void Update(float delta) = 0;
 };
 #endif // !OBJECT_H

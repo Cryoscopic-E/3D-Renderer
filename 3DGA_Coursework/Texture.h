@@ -2,7 +2,9 @@
 #define TEXTURE_H
 
 #include <glm/glm.hpp>
+#include <gl/glew.h>
 #include <GLFW/glfw3.h>
+
 
 namespace TextureOptions
 {
@@ -38,8 +40,11 @@ public:
 	Texture(const char* texturePath,const TextureOptions::TextureSettings &settings);
 	~Texture();
 
-	void Use();
+	void bind(const GLint val);
+	void unbind();
+
+	GLuint GetTextureID();
 private:
-	GLuint texture;
+	GLuint textureID;
 };
 #endif // !TEXTURE_H

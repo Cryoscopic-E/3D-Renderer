@@ -9,25 +9,22 @@ const glm::vec3 Transform::FORWARD = glm::vec3(0.0f, 0.0f, 1.0f);
 
 Transform::Transform() 
 {
-	position = glm::vec3(0.0f, 0.0f, 0.0f);
-	rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	scale = glm::vec3(1.0f, 1.0f, 1.0f);
-	modelMat = glm::translate(glm::mat4(1.0f), position);
-	modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(Transform::LEFT));
-	modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(Transform::UP));
-	modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(Transform::FORWARD));
-	modelMat = glm::scale(modelMat, scale);
-	UpdateLocalVectors();
-}
-
-Transform::~Transform()
-{
+	this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+	this->rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	this->scale = glm::vec3(1.0f, 1.0f, 1.0f);
+	this->modelMat = glm::translate(glm::mat4(1.0f), position);
+	this->modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(Transform::LEFT));
+	this->modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(Transform::UP));
+	this->modelMat = glm::rotate(modelMat, 0.0f, glm::vec3(Transform::FORWARD));
+	this->modelMat = glm::scale(modelMat, scale);
+	this->UpdateLocalVectors();
 }
 
 void Transform::Translate(glm::vec3 direction)
 {
-	position += direction;
-	modelMat = glm::translate(glm::mat4(1.0f), position);
+	this->position += direction;
+	this->modelMat = glm::translate(glm::mat4(1.0f), position);
+	this->UpdateLocalVectors();
 }
 
 void Transform::Rotate(glm::vec3 axis, float angle_deg)
@@ -45,43 +42,43 @@ void Transform::Rotate(glm::vec3 axis, float angle_deg)
 		rotation.z += angle_deg;
 	}
 	
-	modelMat = glm::rotate(modelMat, angle_deg, axis);
-	UpdateLocalVectors();
+	this->modelMat = glm::rotate(this->modelMat, angle_deg, axis);
+	this->UpdateLocalVectors();
 }
 
 void Transform::Scale(glm::vec3 scale)
 {
-	modelMat = glm::scale(modelMat, scale);
+	this->modelMat = glm::scale(modelMat, scale);
 }
 
 glm::vec3 Transform::GetPosition()
 {
-	return position;
+	return this->position;
 }
 
 glm::vec3 Transform::GetRotation()
 {
-	return rotation;
+	return this->rotation;
 }
 
 glm::vec3 Transform::GetScale()
 {
-	return scale;
+	return this->scale;
 }
 
 glm::vec3 Transform::GetUp()
 {
-	return up;
+	return this->up;
 }
 
 glm::vec3 Transform::GetFront()
 {
-	return front;
+	return this->front;
 }
 
 glm::vec3 Transform::GetRight()
 {
-	return right;
+	return this->right;
 }
 
 void Transform::SetPosition(glm::vec3 pos)
@@ -92,12 +89,17 @@ void Transform::SetPosition(glm::vec3 pos)
 void Transform::SetRotation(glm::vec3 rot)
 {
 	this->rotation = rot;
-	UpdateLocalVectors();
+	this->UpdateLocalVectors();
 }
 
 void Transform::SetScale(glm::vec3 scale)
 {
 	this->scale = scale;
+}
+
+glm::mat4 Transform::GetModelMatrix()
+{
+	return this->modelMat;
 }
 
 void Transform::UpdateLocalVectors()
@@ -107,7 +109,7 @@ void Transform::UpdateLocalVectors()
 	f.y = sin(glm::radians(rotation.x));
 	f.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
 
-	front = glm::normalize(f);
-	right = glm::normalize(glm::cross(front, Transform::UP));
-	up = glm::normalize(glm::cross(right, front));
+	this->front = glm::normalize(f);
+	this->right = glm::normalize(glm::cross(front, Transform::UP));
+	this->up = glm::normalize(glm::cross(right, front));
 }
