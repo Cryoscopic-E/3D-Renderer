@@ -29,8 +29,13 @@ public:
 	void SetRotation(glm::vec3 rot);
 	void SetScale(glm::vec3 scale);
 
+	void CalculateModelMatrix();
+	void UpdateLocalVectors();
+
 	glm::mat4 GetModelMatrix();
+
 private:
+
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
@@ -41,6 +46,6 @@ private:
 
 	glm::mat4 modelMat;
 
-	void UpdateLocalVectors();
+	
 };
 #endif // !TRANSFORM_H

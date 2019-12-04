@@ -7,7 +7,7 @@
 class Material
 {
 public:
-	Material(glm::vec3 a, glm::vec3 d, glm::vec3 sp, float sh, Texture * textureDiffuse, Texture* textureSpecular, Shader* shader);
+	Material(float sh, Texture * textureDiffuse, Texture* textureSpecular, Shader* shader);
 	void use();
 	void unuse();
 
@@ -16,9 +16,6 @@ public:
 	Texture* textureDiffuse;
 	Texture* textureSpecular;
 private:
-	glm::vec3 ambient;
-	glm::vec3 diffuse;
-	glm::vec3 specular;
 	float shininess;
 
 	

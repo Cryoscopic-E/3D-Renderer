@@ -27,8 +27,6 @@ Camera::Camera(int windowWidth, int windowHeight, float fov, float near, float f
 	this->aspectRatio = (float)windowWidth / (float)windowHeight;
 	
 	this->projectionMat = glm::perspective(glm::radians(fieldOfView), aspectRatio, near, far);
-	
-	this->transform->SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
 }
 
 Camera::~Camera()

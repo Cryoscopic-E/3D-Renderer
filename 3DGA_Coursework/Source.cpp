@@ -11,6 +11,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
 using namespace std;
 
 #include <GL/glew.h>			// Add library to extend OpenGL to newest version
@@ -34,8 +35,6 @@ void endProgram();
 
 // HELPER FUNCTIONS OPENGL
 void hintsGLFW();
-string readShader(string name);
-void checkErrorShader(GLuint shader);
 void errorCallbackGLFW(int error, const char* description);
 void debugGL();
 static void APIENTRY openGLDebugCallback(GLenum source,
@@ -64,16 +63,18 @@ bool			keyStatus[1024];
 GLfloat			deltaTime = 0.0f;
 GLfloat			lastTime = 0.0f;
 
-Model* cube;
-Model* cube1;
+Object* root;
 Camera mainCamera(windowWidth, windowHeight, 45.0f, 0.1f, 1000.0f);
 
 
-Mesh* mesh;
-Texture* diffuse;
-Shader* shader;
-Material* mat;
-Renderer* renderer1;
+/*DICTIONARIES*/
+std::map<string, Mesh*> meshesDictionary;
+std::map<string, Texture*> texturesdictionary;
+std::map<string, Shader*> shaderesDictionary;
+std::map<string, Material*> materialsDictionary;
+std::map<string, Model*> modelsDictionary;
+
+
 
 int main()
 {
@@ -163,11 +164,28 @@ void hintsGLFW() {
 }
 
 void endProgram() {
-	delete renderer1;
-	delete mesh;
-	delete diffuse;
-	delete shader;
-	delete mat;
+
+	for (std::map<std::string, Mesh*>::iterator iter = meshesDictionary.begin(); iter != meshesDictionary.end(); iter++)
+	{
+		delete iter->second;
+	}
+	for (std::map<std::string, Texture*>::iterator iter = texturesdictionary.begin(); iter != texturesdictionary.end(); iter++)
+	{
+		delete iter->second;
+	}
+	for (std::map<std::string, Shader*>::iterator iter = shaderesDictionary.begin(); iter != shaderesDictionary.end(); iter++)
+	{
+		delete iter->second;
+	}
+	for (std::map<std::string, Material*>::iterator iter = materialsDictionary.begin(); iter != materialsDictionary.end(); iter++)
+	{
+		delete iter->second;
+	}
+	for (std::map<std::string, Model*>::iterator iter = modelsDictionary.begin(); iter != modelsDictionary.end(); iter++)
+	{
+		delete iter->second;
+	}
+	delete root;
 	glfwMakeContextCurrent(window);		// destroys window handler
 	glfwTerminate();	// destroys all windows and releases resources.
 }
@@ -184,30 +202,30 @@ void setupRender() {
 void startup() {
 
 	//	1. LOAD MESHES
-	mesh = new Mesh();
-	mesh->LoadModel("./Models/beveled.obj");
+	Mesh *mesh = new Mesh();
+	mesh->LoadModel("./Models/road.obj");
+	meshesDictionary.insert(std::pair<string,Mesh*>("road", mesh));
 
 	//	2. LOAD TEXTURES
 	TextureOptions::TextureSettings settings(TextureOptions::FilterType::LINEAR, TextureOptions::WrappingType::CLAMP, 0, 0);
-	
-	//	3. COMPILE SHADERS
-	diffuse = new Texture("./Models/triangles_texture.png", settings);
-	shader = new Shader("vs_model.vs", "fs_model.fs");
-	mat = new Material(
-		glm::vec3(1.0f, 1.0f, 10.0f),
-		glm::vec3(0.8f, 0.8f, 0.8f),
-		glm::vec3(0.5f, 0.5f, 0.5f),
+	Texture* diffuse = new Texture("./Models/road.png", settings);
+	texturesdictionary.insert(std::pair<string, Texture*>("road", diffuse));
+
+	//	3. CREATE SHADERS
+	Shader* shader = new Shader("vs_model.vs", "default_fs.fs");
+	shaderesDictionary.insert(std::pair<string, Shader*>("default", shader));
+
+	//	4. CREATE MATERIAL
+	Material *mat = new Material(
 		323.0f,
 		diffuse,
 		diffuse,
 		shader);
+	materialsDictionary.insert(std::pair<string, Material*>("roadMaterial", mat));
 
-	// 4. CREATE RENDERERS
-	renderer1 = new Renderer(mesh, mat);
-	// 5. CREATE MODELS
-	cube = new Model(renderer1, &mainCamera);
-	cube1 = new Model(renderer1, &mainCamera);
-
+	// 4. CREATE MODELS
+	Model* road = new Model(new Renderer(mesh, mat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("roadModel", road));
 	// A few optimizations.
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
@@ -217,14 +235,16 @@ void startup() {
 	glDepthFunc(GL_LEQUAL);
 
 	//	5. INIT OBJECTS PARAMETERS
+	mainCamera.transform->SetPosition(glm::vec3(0.0f, 3.0f, 5.0f));
 	mainCamera.transform->Rotate(Transform::UP, -90.0);
-	cube1->transform->SetPosition(glm::vec3(0.5f, 0.2f, 0.3f));
+	mainCamera.transform->Rotate(Transform::LEFT, -45.0);
+	modelsDictionary["roadModel"]->transform->SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
 }
 
 void update(GLfloat delta) {
-	if (keyStatus[GLFW_KEY_LEFT])			cube->transform->Rotate(Transform::UP,-0.05f);
-	if (keyStatus[GLFW_KEY_RIGHT])			cube->transform->Rotate(Transform::UP,+0.05f);
-	if (keyStatus[GLFW_KEY_UP])				cube->transform->Translate(cube->transform->GetFront() * 0.5f * deltaTime);
+	if (keyStatus[GLFW_KEY_LEFT])			modelsDictionary["roadModel"]->transform->Rotate(Transform::UP,-1.0f);
+	if (keyStatus[GLFW_KEY_RIGHT])			modelsDictionary["roadModel"]->transform->Rotate(Transform::UP,+1.0f);
+	if (keyStatus[GLFW_KEY_UP])				modelsDictionary["roadModel"]->transform->Translate(modelsDictionary["roadModel"]->transform->GetFront() * 5.0f * deltaTime);
 	
 
 	//CAMERA /TODO INPUT SYSTEM
@@ -237,7 +257,8 @@ void update(GLfloat delta) {
 void render(GLfloat delta) {
 
 	glViewport(0, 0, windowWidth, windowHeight);
-
+	mainCamera.transform->CalculateModelMatrix();
+	mainCamera.transform->UpdateLocalVectors();
 	// Clear colour buffer
 	glm::vec4 backgroundColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f); 
 	glClearBufferfv(GL_COLOR, 0, &backgroundColor[0]);
@@ -250,7 +271,10 @@ void render(GLfloat delta) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	/*DRAW ALL MODELS*/
-	cube->Render();
+	for (std::map<std::string, Model*>::iterator iter = modelsDictionary.begin(); iter != modelsDictionary.end(); iter++)
+	{
+		iter->second->Render();
+	}
 }
 
 void onIconifyCallback(GLFWwindow* window, int iconified)

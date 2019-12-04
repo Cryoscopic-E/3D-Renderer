@@ -1,10 +1,7 @@
 #include "Material.h"
 
-Material::Material(glm::vec3 a, glm::vec3 d, glm::vec3 sp, float sh, Texture* textureDiffuse, Texture* textureSpecular, Shader* shader)
+Material::Material(float sh, Texture* textureDiffuse, Texture* textureSpecular, Shader* shader)
 {
-	this->ambient = a;
-	this->diffuse = d;
-	this->specular = sp;
 	this->shininess = sh;
 
 	this->textureDiffuse = textureDiffuse;
@@ -16,9 +13,6 @@ Material::Material(glm::vec3 a, glm::vec3 d, glm::vec3 sp, float sh, Texture* te
 void Material::use()
 {
 	this->shader->bind();
-	this->shader->setUniform("material.ambient", this->ambient);
-	this->shader->setUniform("material.diffuse", this->diffuse);
-	this->shader->setUniform("material.specular", this->specular);
 	this->shader->setUniform("material.shininess", this->shininess);
 	this->shader->setUniform("material.textureDiffuse", 0);
 	this->shader->setUniform("material.textureSpecular", 1);

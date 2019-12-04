@@ -8,7 +8,7 @@ class Model : public Object
 {
 public:
 	Model(Renderer* renderer, Camera* camera);
-
+	~Model();
 	void Render();
 	void Update(float delta);
 private:
