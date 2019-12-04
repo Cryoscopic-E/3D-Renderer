@@ -23,29 +23,29 @@ void Shader::unbind()
 	glUseProgram(0);
 }
 
-void Shader::setUniform(const char* name, bool val)
+void Shader::setUniform(const std::string name, bool val)
 {
-	glUniform1i(getUniformLocation(name), val);
+	glUniform1i(getUniformLocation(name.c_str()), val);
 }
 
-void Shader::setUniform(const char* name, int val)
+void Shader::setUniform(const std::string name, int val)
 {
-	glUniform1i(getUniformLocation(name), val);
+	glUniform1i(getUniformLocation(name.c_str()), val);
 }
 
-void Shader::setUniform(const char* name, float val)
+void Shader::setUniform(const std::string name, float val)
 {
-	glUniform1f(getUniformLocation(name), val);
+	glUniform1f(getUniformLocation(name.c_str()), val);
 }
 
-void Shader::setUniform(const char* name, glm::vec3 val)
+void Shader::setUniform(const std::string name, glm::vec3 val)
 {
-	glUniform3f(getUniformLocation(name), val.x, val.y, val.z);
+	glUniform3f(getUniformLocation(name.c_str()), val.x, val.y, val.z);
 }
 
-void Shader::setUniform(const char* name, glm::mat4 val)
+void Shader::setUniform(const std::string name, glm::mat4 val)
 {
-	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &val[0][0]);
+	glUniformMatrix4fv(getUniformLocation(name.c_str()), 1, GL_FALSE, &val[0][0]);
 }
 
 void Shader::loadShaders()

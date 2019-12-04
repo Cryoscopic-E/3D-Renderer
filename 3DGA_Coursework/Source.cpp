@@ -25,6 +25,7 @@ using namespace std;
 #include "Camera.h"
 #include "Model.h"
 #include "Texture.h"
+#include "Light.h"
 
 // MAIN FUNCTIONS
 void setupRender();
@@ -74,7 +75,9 @@ std::map<string, Shader*> shaderesDictionary;
 std::map<string, Material*> materialsDictionary;
 std::map<string, Model*> modelsDictionary;
 
-
+DirectionalLight* dirLight;
+std::vector<PointLight*> pointLights;
+std::vector<SpotLight*> spotLigthts;
 
 int main()
 {
@@ -186,6 +189,18 @@ void endProgram() {
 		delete iter->second;
 	}
 	delete root;
+
+	delete dirLight;
+
+	for (int i = 0; i < pointLights.size(); i++)
+	{
+		delete pointLights[i];
+	}
+
+	for (int i = 0; i < spotLigthts.size(); i++)
+	{
+		delete spotLigthts[i];
+	}
 	glfwMakeContextCurrent(window);		// destroys window handler
 	glfwTerminate();	// destroys all windows and releases resources.
 }
@@ -200,7 +215,15 @@ void setupRender() {
 }
 
 void startup() {
+	//	0. CREATE LIGHTS
+	dirLight = new DirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.6f, 0.6f, 0.6f));
+	
+	pointLights.push_back(new PointLight(glm::vec3(-0.5f, 1.0f, 0.3f), glm::vec3(1.0f, 0.6f, 0.0f), glm::vec3(1.0f, 0.6f, 0.0f), glm::vec3(1.0f, 0.6f, 0.0f),1.0f,0.09f,0.032f));
+	pointLights.push_back(new PointLight(glm::vec3(-1.0f, 1.0f, 0.3f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f, 0.09f, 0.032f));
 
+	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 2.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f),1.0f,0.09f,0.032f,glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
+	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 2.0f, 1.5f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
+	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 2.0f, 2.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
 	//	1. LOAD MESHES
 	Mesh *mesh = new Mesh();
 	mesh->LoadModel("./Models/road.obj");
@@ -212,7 +235,7 @@ void startup() {
 	texturesdictionary.insert(std::pair<string, Texture*>("road", diffuse));
 
 	//	3. CREATE SHADERS
-	Shader* shader = new Shader("vs_model.vs", "default_fs.fs");
+	Shader* shader = new Shader("vs_model.vs", "fs_model.fs");
 	shaderesDictionary.insert(std::pair<string, Shader*>("default", shader));
 
 	//	4. CREATE MATERIAL
@@ -221,6 +244,11 @@ void startup() {
 		diffuse,
 		diffuse,
 		shader);
+
+	mat->SetDirectionalLight(dirLight);
+	mat->SetPointLights(pointLights);
+	mat->SetSpotLights(spotLigthts);
+
 	materialsDictionary.insert(std::pair<string, Material*>("roadMaterial", mat));
 
 	// 4. CREATE MODELS

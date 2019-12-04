@@ -20,14 +20,11 @@ public:
 	void bind();
 	void unbind();
 
-
-
-	void setUniform(const char* name, bool val);
-	void setUniform(const char* name, int val);
-	void setUniform(const char* name, float val);
-	void setUniform(const char* name, glm::vec3 val);
-	void setUniform(const char* name, glm::mat4 val);
-	void setUniform(const char* name, GLuint val);
+	void setUniform(const std::string name, bool val);
+	void setUniform(const std::string name, int val);
+	void setUniform(const std::string name, float val);
+	void setUniform(const std::string name, glm::vec3 val);
+	void setUniform(const std::string name, glm::mat4 val);
 private:
 	void loadShaders();
 	void checkCompilationError(GLuint shader);
