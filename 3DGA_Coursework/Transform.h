@@ -2,6 +2,7 @@
 #define TRANSFORM_H
 
 #include <glm/glm.hpp>
+#include <vector>
 
 class Transform 
 {
@@ -12,6 +13,8 @@ public:
 	static const glm::vec3 LEFT;
 
 	Transform();
+
+	void AddChild(Transform *child);
 
 	void Translate(glm::vec3 direction);
 	void Rotate(glm::vec3 axis, float angle_deg);
@@ -35,6 +38,9 @@ public:
 	glm::mat4 GetModelMatrix();
 
 private:
+
+	Transform* parent;
+	std::vector<Transform*> children;
 
 	glm::vec3 position;
 	glm::vec3 rotation;

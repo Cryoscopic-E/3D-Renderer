@@ -9,11 +9,17 @@ const glm::vec3 Transform::FORWARD = glm::vec3(0.0f, 0.0f, 1.0f);
 
 Transform::Transform() 
 {
+	this->parent = this;
 	this->position = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->scale = glm::vec3(1.0f, 1.0f, 1.0f);
 	this->CalculateModelMatrix();
 	this->UpdateLocalVectors();
+}
+
+void Transform::AddChild(Transform* child)
+{
+	this->children.push_back(child);
 }
 
 void Transform::Translate(glm::vec3 direction)

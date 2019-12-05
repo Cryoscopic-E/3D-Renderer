@@ -216,23 +216,54 @@ void setupRender() {
 
 void startup() {
 	//	0. CREATE LIGHTS
-	dirLight = new DirectionalLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f, 0.05f, 0.05f), glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3(0.6f, 0.6f, 0.6f));
+	dirLight = new DirectionalLight(glm::vec3(-.2f, -.4f, -0.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.1f, 0.1f, 0.1f));
 	
-	pointLights.push_back(new PointLight(glm::vec3(-0.5f, 1.0f, 0.3f), glm::vec3(1.0f, 0.6f, 0.0f), glm::vec3(1.0f, 0.6f, 0.0f), glm::vec3(1.0f, 0.6f, 0.0f),1.0f,0.09f,0.032f));
-	pointLights.push_back(new PointLight(glm::vec3(-1.0f, 1.0f, 0.3f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f, 0.09f, 0.032f));
+	pointLights.push_back(new PointLight(glm::vec3(-13.5f, 1.0f, -15.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(1.0f, 0.6f, 0.0f), glm::vec3(1.0f, 0.6f, 0.0f),1.0f,0.09f,0.032f));
+	pointLights.push_back(new PointLight(glm::vec3(-13.0f, 1.0f, 1.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f, 0.09f, 0.032f));
 
-	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 2.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f),1.0f,0.09f,0.032f,glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
-	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 2.0f, 1.5f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
-	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 2.0f, 2.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
+	spotLigthts.push_back(new SpotLight(glm::vec3(-13.5f, 1.5f, 15.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f),1.0f,0.09f,0.032f,glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
+	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 1.0f, 20.7f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
+	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 1.0f, 0.8f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
 	//	1. LOAD MESHES
-	Mesh *mesh = new Mesh();
-	mesh->LoadModel("./Models/road.obj");
-	meshesDictionary.insert(std::pair<string,Mesh*>("road", mesh));
+	Mesh *roadMesh = new Mesh();
+	roadMesh->LoadModel("./Models/road.obj");
+	meshesDictionary.insert(std::pair<string,Mesh*>("road", roadMesh));
+
+	Mesh* carMesh = new Mesh();
+	carMesh->LoadModel("./Models/car.obj");
+	meshesDictionary.insert(std::pair<string, Mesh*>("car", carMesh));
+
+	Mesh* poleMesh = new Mesh();
+	poleMesh->LoadModel("./Models/lamp.obj");
+	meshesDictionary.insert(std::pair<string, Mesh*>("pole", poleMesh));
+
+	Mesh* buildingMesh = new Mesh();
+	buildingMesh->LoadModel("./Models/building.obj");
+	meshesDictionary.insert(std::pair<string, Mesh*>("building", buildingMesh));
+
+	Mesh* pinetreeMesh = new Mesh();
+	pinetreeMesh->LoadModel("./Models/tree2.obj");
+	meshesDictionary.insert(std::pair<string, Mesh*>("building", pinetreeMesh));
+
+	Mesh* smalltreeMesh = new Mesh();
+	smalltreeMesh->LoadModel("./Models/tree1.obj");
+	meshesDictionary.insert(std::pair<string, Mesh*>("building", smalltreeMesh));
 
 	//	2. LOAD TEXTURES
 	TextureOptions::TextureSettings settings(TextureOptions::FilterType::LINEAR, TextureOptions::WrappingType::CLAMP, 0, 0);
 	Texture* diffuse = new Texture("./Models/road.png", settings);
+	Texture* cardiffuse = new Texture("./Models/car.png", settings);
+	Texture* polediffuse = new Texture("./Models/Lamp.png", settings);
+	Texture* buildingdiffuse = new Texture("./Models/building.png", settings);
+	Texture* tree1diffuse = new Texture("./Models/Tree_1.png", settings);
+	Texture* tree2diffuse = new Texture("./Models/Tree_2.png", settings);
+
 	texturesdictionary.insert(std::pair<string, Texture*>("road", diffuse));
+	texturesdictionary.insert(std::pair<string, Texture*>("car", cardiffuse));
+	texturesdictionary.insert(std::pair<string, Texture*>("pole", polediffuse));
+	texturesdictionary.insert(std::pair<string, Texture*>("building", buildingdiffuse));
+	texturesdictionary.insert(std::pair<string, Texture*>("tree1", tree1diffuse));
+	texturesdictionary.insert(std::pair<string, Texture*>("tree2", tree2diffuse));
 
 	//	3. CREATE SHADERS
 	Shader* shader = new Shader("vs_model.vs", "fs_model.fs");
@@ -240,20 +271,77 @@ void startup() {
 
 	//	4. CREATE MATERIAL
 	Material *mat = new Material(
-		323.0f,
+		10.0f,
 		diffuse,
 		diffuse,
 		shader);
 
-	mat->SetDirectionalLight(dirLight);
-	mat->SetPointLights(pointLights);
-	mat->SetSpotLights(spotLigthts);
+	Material* carMat = new Material(
+		400.0f,
+		cardiffuse,
+		cardiffuse,
+		shader);
+
+	Material* poleMat = new Material(
+		200.0f,
+		polediffuse,
+		polediffuse,
+		shader);
+	
+	Material* buildingMat = new Material(
+		50.0f,
+		buildingdiffuse,
+		buildingdiffuse,
+		shader);
+
+	Material* tree1Mat = new Material(
+		50.0f,
+		tree1diffuse,
+		tree1diffuse,
+		shader);
+
+	Material* tree2Mat = new Material(
+		50.0f,
+		tree2diffuse,
+		tree2diffuse,
+		shader);
 
 	materialsDictionary.insert(std::pair<string, Material*>("roadMaterial", mat));
+	materialsDictionary.insert(std::pair<string, Material*>("carMaterial", carMat));
+	materialsDictionary.insert(std::pair<string, Material*>("poleMat", poleMat));
+	materialsDictionary.insert(std::pair<string, Material*>("buildingMat", buildingMat));
+	materialsDictionary.insert(std::pair<string, Material*>("tree1Mat", tree1Mat));
+	materialsDictionary.insert(std::pair<string, Material*>("tree2Mat", tree2Mat));
+
+	for (std::map<std::string, Material*>::iterator iter = materialsDictionary.begin(); iter != materialsDictionary.end(); iter++)
+	{
+		iter->second->SetDirectionalLight(dirLight);
+		iter->second->SetPointLights(pointLights);
+		iter->second->SetSpotLights(spotLigthts);
+	}
+
 
 	// 4. CREATE MODELS
-	Model* road = new Model(new Renderer(mesh, mat), &mainCamera);
+	Model* road = new Model(new Renderer(roadMesh, mat), &mainCamera);
 	modelsDictionary.insert(std::pair<string, Model*>("roadModel", road));
+	Model* carModel = new Model(new Renderer(carMesh, carMat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("carModel", carModel));
+	Model* poleModel = new Model(new Renderer(poleMesh, poleMat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("poleModel", poleModel));
+	Model* poleModel2 = new Model(new Renderer(poleMesh, poleMat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("poleModel2", poleModel2));
+	Model* poleModel3 = new Model(new Renderer(poleMesh, poleMat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("poleModel3", poleModel3));
+	Model* buildingModel = new Model(new Renderer(buildingMesh, buildingMat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("buildingModel", buildingModel));
+	Model* pineModel1 = new Model(new Renderer(pinetreeMesh, tree2Mat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("pm1", pineModel1));
+	Model* pineModel2 = new Model(new Renderer(pinetreeMesh, tree2Mat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("pm2", pineModel2));
+	Model* smalltreeModel1 = new Model(new Renderer(smalltreeMesh, tree1Mat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("st1", smalltreeModel1));
+	Model* smalltreeModel2 = new Model(new Renderer(smalltreeMesh, tree1Mat), &mainCamera);
+	modelsDictionary.insert(std::pair<string, Model*>("st2", smalltreeModel2));
 	// A few optimizations.
 	glFrontFace(GL_CCW);
 	glCullFace(GL_BACK);
@@ -263,24 +351,59 @@ void startup() {
 	glDepthFunc(GL_LEQUAL);
 
 	//	5. INIT OBJECTS PARAMETERS
-	mainCamera.transform->SetPosition(glm::vec3(0.0f, 3.0f, 5.0f));
+	mainCamera.transform->SetPosition(glm::vec3(0.0f, 25.0f, -10.0f));
 	mainCamera.transform->Rotate(Transform::UP, -90.0);
 	mainCamera.transform->Rotate(Transform::LEFT, -45.0);
-	modelsDictionary["roadModel"]->transform->SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
+	modelsDictionary["roadModel"]->transform->SetScale(glm::vec3(3.0f, 1.0f, 3.0f));
+	modelsDictionary["carModel"]->transform->SetScale(glm::vec3(0.6f, 0.6f, 0.6f));
+	modelsDictionary["carModel"]->transform->SetPosition(glm::vec3(20.0f, 0.0f, 0.0f));
+
+	modelsDictionary["poleModel"]->transform->SetScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	modelsDictionary["poleModel"]->transform->SetPosition(glm::vec3(8.5f, 0.0f, 0.0f));
+	modelsDictionary["poleModel"]->transform->Rotate(Transform::UP,-90);
+
+	modelsDictionary["poleModel2"]->transform->SetScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	modelsDictionary["poleModel2"]->transform->SetPosition(glm::vec3(8.5f, 0.0f, 15.0f));
+	modelsDictionary["poleModel2"]->transform->Rotate(Transform::UP, -90);
+
+	modelsDictionary["poleModel3"]->transform->SetScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	modelsDictionary["poleModel3"]->transform->SetPosition(glm::vec3(8.5f, 0.0f, -15.0f));
+	modelsDictionary["poleModel3"]->transform->Rotate(Transform::UP, -90);
+
+
+	modelsDictionary["buildingModel"]->transform->Scale(glm::vec3(3.0f, 3.0, 3.0f));
+	modelsDictionary["buildingModel"]->transform->Translate(glm::vec3(0.0f,0.0, -3.0f));
+
+	modelsDictionary["pm1"]->transform->Scale(glm::vec3(2.0f, 2.0, 2.0f));
+	modelsDictionary["pm1"]->transform->Translate(glm::vec3(-13.0f, 0.0, -14.0f));
+
+	modelsDictionary["pm2"]->transform->Scale(glm::vec3(2.0f, 2.0f, 2.0f));
+	modelsDictionary["pm2"]->transform->Translate(glm::vec3(-10.0f, 0.0, -20.0f));
+
+	modelsDictionary["st1"]->transform->Scale(glm::vec3(2.0f, 2.0f, 2.0f));
+	modelsDictionary["st1"]->transform->Translate(glm::vec3(-12.0f, 0.0, -22.0f));
+
+	modelsDictionary["st2"]->transform->Scale(glm::vec3(2.0f, 2.0, 2.0f));
+	modelsDictionary["st2"]->transform->Translate(glm::vec3(-9.0f, 0.0, -16.0f));
+
 }
 
 void update(GLfloat delta) {
-	if (keyStatus[GLFW_KEY_LEFT])			modelsDictionary["roadModel"]->transform->Rotate(Transform::UP,-1.0f);
-	if (keyStatus[GLFW_KEY_RIGHT])			modelsDictionary["roadModel"]->transform->Rotate(Transform::UP,+1.0f);
-	if (keyStatus[GLFW_KEY_UP])				modelsDictionary["roadModel"]->transform->Translate(modelsDictionary["roadModel"]->transform->GetFront() * 5.0f * deltaTime);
+	if (keyStatus[GLFW_KEY_LEFT])			modelsDictionary["carModel"]->transform->Rotate(Transform::UP,-1.0f);
+	if (keyStatus[GLFW_KEY_RIGHT])			modelsDictionary["carModel"]->transform->Rotate(Transform::UP,+1.0f);
+	if (keyStatus[GLFW_KEY_UP])				modelsDictionary["carModel"]->transform->Translate(modelsDictionary["carModel"]->transform->GetFront() * 5.0f * deltaTime);
+	if (keyStatus[GLFW_KEY_DOWN])			modelsDictionary["carModel"]->transform->Translate(modelsDictionary["carModel"]->transform->GetFront() * -5.0f * deltaTime);
 	
 
 	//CAMERA /TODO INPUT SYSTEM
-	if (keyStatus[GLFW_KEY_W])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * 5.0f * deltaTime);
-	if (keyStatus[GLFW_KEY_S])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * -5.0f * deltaTime);
-	if (keyStatus[GLFW_KEY_A])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * -5.0f * deltaTime);
-	if (keyStatus[GLFW_KEY_D])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * 5.0f * deltaTime);
+	if (keyStatus[GLFW_KEY_W])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * 10.0f * deltaTime);
+	if (keyStatus[GLFW_KEY_S])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * -10.0f * deltaTime);
+	if (keyStatus[GLFW_KEY_A])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * -10.0f * deltaTime);
+	if (keyStatus[GLFW_KEY_D])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * 10.0f * deltaTime);
+	if (keyStatus[GLFW_KEY_Q])	mainCamera.transform->Rotate(Transform::UP, -1.0f);
+	if (keyStatus[GLFW_KEY_E])	mainCamera.transform->Rotate(Transform::UP, 1.0f);
 }
+
 
 void render(GLfloat delta) {
 

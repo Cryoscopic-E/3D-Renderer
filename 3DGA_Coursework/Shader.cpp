@@ -1,6 +1,5 @@
 #include "Shader.h"
 
-//TODO cite https://community.khronos.org/t/basic-opengl-shader-class-codereview/75726
 Shader::Shader(const char* vertex, const char* fragment)
 {
 	this->fsPath = fragment;
