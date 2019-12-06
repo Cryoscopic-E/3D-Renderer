@@ -40,12 +40,6 @@ struct SpotLight{
   float outCutOff;
 };
 
-// struct Light{
-//   vec3 position;
-//   vec3 ambient;
-//   vec3 diffuse;
-//   vec3 specular;
-// };
 
 struct Material{
   float shininess;
@@ -56,8 +50,6 @@ struct Material{
 #define N_SPOT_LIGHTS 3
 #define N_POINT_LIGHTS 2
 
-//uniform mat4 model_matrix;
-//uniform Light light;
 uniform vec3 viewPosition;
 uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[N_POINT_LIGHTS];
@@ -69,23 +61,6 @@ vec3 ContributePointLight(PointLight light, vec3 normal,vec3 fragmentPosition, v
 vec3 ContributeSpotLight(SpotLight light, vec3 normal,vec3 fragmentPosition, vec3 viewDirection);
 
 void main(void){
-  // // ambient
-  // vec3 ambient=light.ambient*texture(material.textureDiffuse,fs_in.tc).rgb;
-  
-  // // diffuse
-  // vec3 norm=normalize(fs_in.normals);
-  // vec3 lightDir=normalize(light.position-fs_in.fragPos);
-  // float diff=max(dot(norm,lightDir),0.f);
-  // vec3 diffuse=light.diffuse*diff*texture(material.textureDiffuse,fs_in.tc).rgb;
-  
-  // // specular
-  // vec3 viewDir=normalize(viewPosition-fs_in.fragPos);
-  // vec3 reflectDir=reflect(-lightDir,norm);
-  // float spec=pow(max(dot(viewDir,reflectDir),0.f),material.shininess);
-  // vec3 specular=light.specular*spec*texture(material.textureSpecular,fs_in.tc).rgb;
-  
-  // vec3 result=ambient+diffuse+specular;
-  // color=vec4(result,1.f);
 
   //prop
   vec3 norm = normalize(fs_in.normals);

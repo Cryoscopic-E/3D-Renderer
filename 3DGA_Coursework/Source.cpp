@@ -61,12 +61,21 @@ int				windowHeight = 480;
 bool			running = true;									// Are we still running?
 bool			pause = false;
 bool			keyStatus[1024];
+
+bool camControlPressed = false;
+bool camControl = false;
+int lastmousex = 320;
+int lastmousey = 240;
+
 GLfloat			deltaTime = 0.0f;
 GLfloat			lastTime = 0.0f;
 
 Object* root;
 Camera mainCamera(windowWidth, windowHeight, 45.0f, 0.1f, 1000.0f);
 
+
+// frambuffer var
+unsigned int qVAO, qVBO, framebuffer, textureColBuffer, renderBuffer;
 
 /*DICTIONARIES*/
 std::map<string, Mesh*> meshesDictionary;
@@ -221,8 +230,8 @@ void startup() {
 	pointLights.push_back(new PointLight(glm::vec3(-13.5f, 1.0f, -15.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(1.0f, 0.6f, 0.0f), glm::vec3(1.0f, 0.6f, 0.0f),1.0f,0.09f,0.032f));
 	pointLights.push_back(new PointLight(glm::vec3(-13.0f, 1.0f, 1.3f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 0.0f, 0.0f), 1.0f, 0.09f, 0.032f));
 
-	spotLigthts.push_back(new SpotLight(glm::vec3(-13.5f, 1.5f, 15.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f),1.0f,0.09f,0.032f,glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
-	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 1.0f, 20.7f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
+	spotLigthts.push_back(new SpotLight(glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f),1.0f,0.09f,0.032f,glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
+	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 1.0f, 20.7f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
 	spotLigthts.push_back(new SpotLight(glm::vec3(0.0f, 1.0f, 0.8f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(0.8f, 0.8f, 0.8f), 1.0f, 0.09f, 0.032f, glm::cos(glm::radians(14.0f)), glm::cos(glm::radians(11.0f))));
 	//	1. LOAD MESHES
 	Mesh *roadMesh = new Mesh();
@@ -385,40 +394,56 @@ void startup() {
 
 	modelsDictionary["st2"]->transform->Scale(glm::vec3(2.0f, 2.0, 2.0f));
 	modelsDictionary["st2"]->transform->Translate(glm::vec3(-9.0f, 0.0, -16.0f));
-
 }
 
 void update(GLfloat delta) {
-	if (keyStatus[GLFW_KEY_LEFT])			modelsDictionary["carModel"]->transform->Rotate(Transform::UP,-1.0f);
-	if (keyStatus[GLFW_KEY_RIGHT])			modelsDictionary["carModel"]->transform->Rotate(Transform::UP,+1.0f);
+	if (keyStatus[GLFW_KEY_LEFT])			modelsDictionary["carModel"]->transform->Rotate(modelsDictionary["carModel"]->transform->GetUp(),+1.0f);
+	if (keyStatus[GLFW_KEY_RIGHT])			modelsDictionary["carModel"]->transform->Rotate(modelsDictionary["carModel"]->transform->GetUp(),-1.0f);
 	if (keyStatus[GLFW_KEY_UP])				modelsDictionary["carModel"]->transform->Translate(modelsDictionary["carModel"]->transform->GetFront() * 5.0f * deltaTime);
 	if (keyStatus[GLFW_KEY_DOWN])			modelsDictionary["carModel"]->transform->Translate(modelsDictionary["carModel"]->transform->GetFront() * -5.0f * deltaTime);
 	
 
-	//CAMERA /TODO INPUT SYSTEM
-	if (keyStatus[GLFW_KEY_W])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * 10.0f * deltaTime);
-	if (keyStatus[GLFW_KEY_S])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * -10.0f * deltaTime);
-	if (keyStatus[GLFW_KEY_A])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * -10.0f * deltaTime);
-	if (keyStatus[GLFW_KEY_D])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * 10.0f * deltaTime);
-	if (keyStatus[GLFW_KEY_Q])	mainCamera.transform->Rotate(Transform::UP, -1.0f);
-	if (keyStatus[GLFW_KEY_E])	mainCamera.transform->Rotate(Transform::UP, 1.0f);
-}
+	//CAMERA
+	if (keyStatus[GLFW_KEY_C] && !camControlPressed) {
+		camControlPressed = true;
+	}
+	if (camControlPressed && !keyStatus[GLFW_KEY_C])
+	{
+		camControlPressed = false;
+		if (camControl) 
+			camControl = false;
+		
+		else 
+			camControl = true;
+	}
+	if (camControl) {
+		if (keyStatus[GLFW_KEY_W])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * 10.0f * deltaTime);
+		if (keyStatus[GLFW_KEY_S])	mainCamera.transform->Translate(mainCamera.transform->GetFront() * -10.0f * deltaTime);
+		if (keyStatus[GLFW_KEY_A])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * -10.0f * deltaTime);
+		if (keyStatus[GLFW_KEY_D])	mainCamera.transform->Translate(mainCamera.transform->GetRight() * 10.0f * deltaTime);
+		if (keyStatus[GLFW_KEY_Q])	mainCamera.transform->Rotate(Transform::UP, -1.0f);
+		if (keyStatus[GLFW_KEY_E])	mainCamera.transform->Rotate(Transform::UP, 1.0f);
+	}
+	}
+	
 
 
 void render(GLfloat delta) {
-
+	
 	glViewport(0, 0, windowWidth, windowHeight);
+
 	mainCamera.transform->CalculateModelMatrix();
 	mainCamera.transform->UpdateLocalVectors();
 	// Clear colour buffer
-	glm::vec4 backgroundColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f); 
+	glm::vec4 backgroundColor = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
 	glClearBufferfv(GL_COLOR, 0, &backgroundColor[0]);
 
 	// Clear deep buffer
-	static const GLfloat one = 1.0f; glClearBufferfv(GL_DEPTH, 0, &one);
+	static const GLfloat one = 1.0f; 
+	glClearBufferfv(GL_DEPTH, 0, &one);
 
 	// Enable blend
-	glEnable(GL_BLEND); 
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	/*DRAW ALL MODELS*/
@@ -426,6 +451,7 @@ void render(GLfloat delta) {
 	{
 		iter->second->Render();
 	}
+
 }
 
 void onIconifyCallback(GLFWwindow* window, int iconified)
@@ -466,6 +492,19 @@ void onMouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 void onMouseMoveCallback(GLFWwindow* window, double x, double y) {
 	int mouseX = static_cast<int>(x);
 	int mouseY = static_cast<int>(y);
+
+	int xOff = mouseX - lastmousex;
+	int yOff = mouseY - lastmousey;
+	lastmousex = mouseX;
+	lastmousey = mouseY;
+
+	if (camControl)
+	{
+		mainCamera.transform->Rotate(Transform::UP, (float)xOff);
+		mainCamera.transform->Rotate(Transform::LEFT, (float)yOff);
+	}
+	
+
 }
 
 static void onMouseWheelCallback(GLFWwindow* window, double xoffset, double yoffset) {

@@ -25,6 +25,11 @@ void Transform::AddChild(Transform* child)
 void Transform::Translate(glm::vec3 direction)
 {
 	this->position += direction;
+
+	for (int i = 0; i < this->children.size(); i++)
+	{
+		this->children[i]->position += direction;
+	}
 }
 
 void Transform::Rotate(glm::vec3 axis, float angle_deg)
